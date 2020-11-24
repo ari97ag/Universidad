@@ -10,54 +10,57 @@ X = pd.read_csv('Mall_Customers.csv')
 
 #Limpiando la base de datos
 drop_features = ['CustomerID', 'Gender']
+print(drop_features)
 X = X.drop(drop_features, axis=1)
-
-# Omitiendo observaciones NA.
 X.fillna(method='ffill', inplace=True)
 
-#Base con la cual se trabajara
+#Base limpita
 X.head()
 
-# Scaling the data to bring all the attributes to a comparable level
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+# Estandarizando las variables a que sigan un comportameinto normal [0,1]
+estandarizado_normal = StandardScaler()
+X_estandarizado_normal = estandarizado_normal.fit_transform(X)
 
-# Normalizing the data so that the data
-# approximately follows a Gaussian distribution
-X_normalized = normalize(X_scaled)
+# Escalado a [0,1] en las observaciones normalizadas
+X_escalado = normalize(X_estandarizado_normal)
 
-# Converting the numpy array into a pandas DataFrame
-X_normalized = pd.DataFrame(X_normalized)
+X_escalado = pd.DataFrame(X_escalado)
+X_escalado.columns = X.columns
+X_escalado.head()
 
-# Renaming the columns
-X_normalized.columns = X.columns
+# Construcción del modelo de clasificación OPTICS, diferentes metricas
+modelo_optic1 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='minkowski',p = 1) #Distancia Manhattan
+modelo_optic2 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='minkowski',p = 2) #Distancia Euclidiana
+modelo_optic3 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='euclidean')
 
-X_normalized.head()
+# Insertando la base en los modelos
+modelo_optic1.fit(X_escalado)
+modelo_optic2.fit(X_escalado)
+modelo_optic3.fit(X_escalado)
 
-# Construccion del modelo OTICS
-optics_model = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05)
+# Label según DBSCAN con epsilon = 0.5
+labels1 = cluster_optics_dbscan(reachability = modelo_optic1.reachability_, core_distances = modelo_optic1.core_distances_, ordering = modelo_optic1.ordering_, eps = 0.5)
+# Label según DBSCAN con epsilon = 2.0
+labels2 = cluster_optics_dbscan(reachability = modelo_optic1.reachability_, core_distances = modelo_optic1.core_distances_, ordering = modelo_optic1.ordering_, eps = 2)
 
-# Training the model
-optics_model.fit(X_normalized)
+# Matriz con posiciones del 0 al 199
+space = np.arange(len(X_escalado))
 
-# Producing the labels according to the DBSCAN technique with eps = 0.5
-labels1 = cluster_optics_dbscan(reachability = optics_model.reachability_, core_distances = optics_model.core_distances_, ordering = optics_model.ordering_, eps = 0.5)
-# Producing the labels according to the DBSCAN technique with eps = 2.0
-labels2 = cluster_optics_dbscan(reachability = optics_model.reachability_, core_distances = optics_model.core_distances_, ordering = optics_model.ordering_, eps = 2)
+# Distancia de alcance en cada punto observado
+reachability = modelo_optic1.reachability_[modelo_optic1.ordering_]
+print(reachability)
 
-# Creating a numpy array with numbers at equal spaces till
-# the specified range
-space = np.arange(len(X_normalized))
+#Aqui deberia probar todos los criterios com hund y el otro
 
-# Storing the reachability distance of each point
-reachability = optics_model.reachability_[optics_model.ordering_]
 
-# Storing the cluster labels of each point
-labels = optics_model.labels_[optics_model.ordering_]
 
+
+
+# Observaciones que logran ser clasificadas con exito y aquellas que no
+labels = modelo_optic1.labels_[modelo_optic1.ordering_]
 print(labels)
 
-# Defining the framework of the visualization
+# Definiendo la ventana de visualizacion
 plt.figure(figsize=(10, 7))
 G = gridspec.GridSpec(2, 3)
 ax1 = plt.subplot(G[0, :])
@@ -74,42 +77,41 @@ for Class, colour in zip(range(0, 5), colors):
 ax1.plot(space[labels == -1], reachability[labels == -1], 'k.', alpha=0.3)
 ax1.plot(space, np.full_like(space, 2., dtype=float), 'k-', alpha=0.5)
 ax1.plot(space, np.full_like(space, 0.5, dtype=float), 'k-.', alpha=0.5)
-ax1.set_ylabel('Reachability Distance')
-ax1.set_title('Reachability Plot')
+ax1.set_ylabel('Distancia de Alcance')
+ax1.set_title('Gráfico de Alcance')
 
-# Plotting the OPTICS Clustering
+# OPTICS Clustering
 colors = ['c.', 'b.', 'r.', 'y.', 'g.']
 for Class, colour in zip(range(0, 5), colors):
-    Xk = X_normalized[optics_model.labels_ == Class]
+    Xk = X_escalado[modelo_optic1.labels_ == Class]
     ax2.plot(Xk.iloc[:, 0], Xk.iloc[:, 1], colour, alpha=0.3)
 
-ax2.plot(X_normalized.iloc[optics_model.labels_ == -1, 0],
-         X_normalized.iloc[optics_model.labels_ == -1, 1],
+ax2.plot(X_escalado.iloc[modelo_optic1.labels_ == -1, 0],
+         X_escalado.iloc[modelo_optic1.labels_ == -1, 1],
          'k+', alpha=0.1)
-ax2.set_title('OPTICS Clustering')
+ax2.set_title('OPTICS 1 Clustering')
 
-# Plotting the DBSCAN Clustering with eps = 0.5
+# DBSCAN Clustering con epsilon = 0.5
 colors = ['c', 'b', 'r', 'y', 'g', 'greenyellow']
 for Class, colour in zip(range(0, 6), colors):
-    Xk = X_normalized[labels1 == Class]
+    Xk = X_escalado[labels1 == Class]
     ax3.plot(Xk.iloc[:, 0], Xk.iloc[:, 1], colour, alpha=0.3, marker='.')
 
-ax3.plot(X_normalized.iloc[labels1 == -1, 0],
-         X_normalized.iloc[labels1 == -1, 1],
+ax3.plot(X_escalado.iloc[labels1 == -1, 0],
+         X_escalado.iloc[labels1 == -1, 1],
          'k+', alpha=0.1)
-ax3.set_title('DBSCAN clustering with eps = 0.5')
+ax3.set_title('DBSCAN Clustering epsilon = 0,5')
 
-# Plotting the DBSCAN Clustering with eps = 2.0
+# DBSCAN Clustering con epsilon = 2.0
 colors = ['c.', 'y.', 'm.', 'g.']
 for Class, colour in zip(range(0, 4), colors):
-    Xk = X_normalized.iloc[labels2 == Class]
+    Xk = X_escalado.iloc[labels2 == Class]
     ax4.plot(Xk.iloc[:, 0], Xk.iloc[:, 1], colour, alpha=0.3)
 
-ax4.plot(X_normalized.iloc[labels2 == -1, 0],
-         X_normalized.iloc[labels2 == -1, 1],
+ax4.plot(X_escalado.iloc[labels2 == -1, 0],
+         X_escalado.iloc[labels2 == -1, 1],
          'k+', alpha=0.1)
-ax4.set_title('DBSCAN Clustering with eps = 2.0')
+ax4.set_title('DBSCAN Clustering epsilon = 2,0')
 
 plt.tight_layout()
 plt.show()
-
