@@ -50,7 +50,7 @@ space = np.arange(len(X_escalado))
 reachability = modelo_optic1.reachability_[modelo_optic1.ordering_]
 print(reachability)
 
-# Aqui deberia probar todos los criterios com hund y el otro
+# De aqui en adelante se deberia probar todos los criterios com hund y el otro
 # El metodo Optics frente al DBSCAN no fija el distancia que
 # deberia existir entre las observaciones, por eso existe un
 # epsilon variable de acuerdo a cuan denso es el cluster
