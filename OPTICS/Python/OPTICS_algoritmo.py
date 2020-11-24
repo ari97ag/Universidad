@@ -50,7 +50,10 @@ space = np.arange(len(X_escalado))
 reachability = modelo_optic1.reachability_[modelo_optic1.ordering_]
 print(reachability)
 
-#Aqui deberia probar todos los criterios com hund y el otro
+# Aqui deberia probar todos los criterios com hund y el otro
+# El metodo Optics frente al DBSCAN no fija el distancia que
+# deberia existir entre las observaciones, por eso existe un
+# epsilon variable de acuerdo a cuan denso es el cluster
 
 
 
@@ -77,7 +80,7 @@ for Class, colour in zip(range(0, 5), colors):
 ax1.plot(space[labels == -1], reachability[labels == -1], 'k.', alpha=0.3)
 ax1.plot(space, np.full_like(space, 2., dtype=float), 'k-', alpha=0.5)
 ax1.plot(space, np.full_like(space, 0.5, dtype=float), 'k-.', alpha=0.5)
-ax1.set_ylabel('Distancia de Alcance')
+ax1.set_ylabel('Distancia de alcance epsilon')
 ax1.set_title('Gráfico de Alcance')
 
 # OPTICS Clustering
