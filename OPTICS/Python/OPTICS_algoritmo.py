@@ -29,8 +29,8 @@ X_escalado.columns = X.columns
 X_escalado.head()
 
 # Construcción del modelo de clasificación OPTICS, diferentes metricas
-modelo_optic1 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='minkowski',p = 1) #Distancia Manhattan
-modelo_optic2 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='minkowski',p = 2) #Distancia Euclidiana
+modelo_optic1 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='minkowski',p = 2) #Distancia Manhattan
+modelo_optic2 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='minkowski',p = 1) #Distancia Euclidiana
 modelo_optic3 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='euclidean')
 
 # Insertando la base en los modelos
