@@ -50,7 +50,9 @@ clusters_hla <- best_kxi_hla$clusters
 fortify_pca(m_hla, sup_vars = data.frame(Clusters = clusters_hla)) %>%
   ggpairs('Clusters', ellipses = TRUE, variables = TRUE)
 
-#Para agregar y ctegorizar la base
+#Pipeline me da la distancia de las metricas
+
+#Para agregar y categorizar la base
 kk<-rep(1,200)
 hla2<-cbind(hla,clusters_hla,kk)
 aggregate(kk, by=list(hla2$clusters_hla), sum)
