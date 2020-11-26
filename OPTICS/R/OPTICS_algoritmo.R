@@ -64,6 +64,6 @@ clusters_hla <- best_kxi_hla$clusters
 
 kk<-rep(1,200)
 hla2<-cbind(hla,clusters_hla,kk)
-aggregate(Gender, by=list(hla2$clusters_hla), sum)
+aggregate(kk, by=list(hla2$clusters_hla), sum)
 
-fortify_pca(m_hla, sup_vars = data.frame(Clusters = clusters_hla)) %>% ggpairs('Clusters', ellipses = TRUE, variables = TRUE)
+fortify_pca(m_hla, sup_vars = data.frame(Clusters = clusters_hla)) %>% ggpairs('Clusters', ellipses = TRUE)

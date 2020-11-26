@@ -29,14 +29,12 @@ X_escalado.columns = X.columns
 X_escalado.head()
 
 # Construcción del modelo de clasificación OPTICS, diferentes metricas
-modelo_optic1 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='minkowski',p = 2) #Distancia Manhattan
-modelo_optic2 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='minkowski',p = 1) #Distancia Euclidiana
-modelo_optic3 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=0.05,metric='euclidean')
+modelo_optic1 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=10,metric='minkowski',p = 1,cluster_method='xi') #Distancia Manhattan
+modelo_optic2 = OPTICS(min_samples=10, xi=0.05, min_cluster_size=10,metric='euclidean',cluster_method='xi')
 
 # Insertando la base en los modelos
 modelo_optic1.fit(X_escalado)
 modelo_optic2.fit(X_escalado)
-modelo_optic3.fit(X_escalado)
 
 # Label según DBSCAN con epsilon = 0.5
 labels1 = cluster_optics_dbscan(reachability = modelo_optic1.reachability_, core_distances = modelo_optic1.core_distances_, ordering = modelo_optic1.ordering_, eps = 0.5)
