@@ -85,21 +85,21 @@ ax2 = plt.subplot(G[1, 0])
 ax3 = plt.subplot(G[1, 1])
 ax4 = plt.subplot(G[1, 2])
 
-# Grafica distancia de alcance
-colors = ['c.', 'b.', 'r.', 'y.', 'g.']
-for Class, colour in zip(range(0, 5), colors):
+# Grafica distancia de accesibilidad
+colors = ['c.', 'b.', 'r.', 'y.', 'g.','m.']
+for Class, colour in zip(range(0, 6), colors):
     Xk = vector[clusters1 == Class]
     Rk = reachability1[clusters1 == Class]
     ax1.plot(Xk, Rk, colour, alpha=0.3)
 ax1.plot(vector[clusters1 == -1], reachability1[clusters1 == -1], 'k.', alpha=0.3)
-ax1.plot(vector, np.full_like(vector, 2., dtype=float), 'k-', alpha=0.5)
+ax1.plot(vector, np.full_like(vector, 2., dtype=float), 'k-.', alpha=0.5)
 ax1.plot(vector, np.full_like(vector, 0.5, dtype=float), 'k-.', alpha=0.5)
 ax1.set_ylabel('Puntaje de Accecibilidad')
 ax1.set_title('Gráfica de Accesibilidad')
 
 # OPTICS Clustering
-colors = ['c.', 'b.', 'r.', 'y.', 'g.']
-for Class, colour in zip(range(0, 5), colors):
+colors = ['c.', 'b.', 'r.', 'y.', 'g.','m.']
+for Class, colour in zip(range(0, 6), colors):
     Xk = X_escalado[modelo_optics1.labels_ == Class]
     ax2.plot(Xk.iloc[:, 0], Xk.iloc[:, 1], colour, alpha=0.3)
 
@@ -109,7 +109,7 @@ ax2.plot(X_escalado.iloc[modelo_optics1.labels_ == -1, 0],
 ax2.set_title('OPTICS 1 Clustering')
 
 # DBSCAN Clustering con epsilon = 0.5
-colors = ['c', 'b', 'r', 'y', 'g', 'greenyellow']
+colors = ['c.', 'b.', 'r.', 'y.', 'g.', 'm.']
 for Class, colour in zip(range(0, 6), colors):
     Xk = X_escalado[DBSCAN11 == Class]
     ax3.plot(Xk.iloc[:, 0], Xk.iloc[:, 1], colour, alpha=0.3, marker='.')
@@ -178,8 +178,8 @@ ax3 = plt.subplot(G[1, 1])
 ax4 = plt.subplot(G[1, 2])
 
 # Grafica distancia de alcance
-colors = ['c.', 'b.', 'r.', 'y.', 'g.']
-for Class, colour in zip(range(0, 5), colors):
+colors = ['c.', 'b.', 'r.', 'y.', 'g.','m.']
+for Class, colour in zip(range(0, 6), colors):
     Xk = vector[clusters2 == Class]
     Rk = reachability2[clusters2 == Class]
     ax1.plot(Xk, Rk, colour, alpha=0.3)
@@ -190,8 +190,8 @@ ax1.set_ylabel('Puntaje de Accecibilidad')
 ax1.set_title('Gráfica de Accesibilidad')
 
 # OPTICS Clustering
-colors = ['c.', 'b.', 'r.', 'y.', 'g.']
-for Class, colour in zip(range(0, 5), colors):
+colors = ['c.', 'b.', 'r.', 'y.', 'g.','m.']
+for Class, colour in zip(range(0, 6), colors):
     Xk = X_escalado[modelo_optics2.labels_ == Class]
     ax2.plot(Xk.iloc[:, 0], Xk.iloc[:, 1], colour, alpha=0.3)
 
@@ -201,7 +201,7 @@ ax2.plot(X_escalado.iloc[modelo_optics2.labels_ == -1, 0],
 ax2.set_title('OPTICS 2 Clustering')
 
 # DBSCAN Clustering con epsilon = 0.5
-colors = ['c', 'b', 'r', 'y', 'g', 'greenyellow']
+colors = ['c.', 'b.', 'r.', 'y.', 'g.','m.']
 for Class, colour in zip(range(0, 6), colors):
     Xk = X_escalado[DBSCAN21 == Class]
     ax3.plot(Xk.iloc[:, 0], Xk.iloc[:, 1], colour, alpha=0.3, marker='.')

@@ -32,7 +32,7 @@ optics_parametros_1<-expand.grid(n_xi = 3:6,pts = c(4,6,8,10),dist = "euclidean"
 modelos_optics1 <- opticskxi_pipeline(base_1, optics_parametros_1)
 ggplot_kxi_metrics(modelos_optics1,n = 12)
 
-#Grafica de alcanzabilidad de los 4 mejores de los modelos
+#Grafica de accesibilidad de los 4 mejores de los modelos
 gtable_kxi_profiles(modelos_optics1, rank = 1:4) %>% plot
 
 #Distancia Manhattan
@@ -79,8 +79,6 @@ fortify_pca(base_1, sup_vars = data.frame(Clusters = clusters4)) %>%
 x_referencia<-dbscan_1$cluster
 x_comparativo<-clusters4
 
-# Para realizar una validacion externa podriamos hacerlo si tenemos los 
-# datos categorizados originales de la base o por medio de la comparacion con otro metodo o modelo
 # Indice de Rand
 rand.index(x_referencia, x_comparativo)
 # Indice de Rand Ajustado
